@@ -1,0 +1,64 @@
+\chapter{Preliminaries: Target Detection}
+\label{chap:preliminaries}
+We consider a scalar-parameter detection problem.  Let $y \in \R^d$ be
+the observation vector as defined in (\ref{eq:additive_model}) and
+$w \sim p_w$ the clutter drawn from an unknown distribution $p_w$. This formulation covers, for example, the hyperspectral imaging (HSI)
+setting where $y$ is a spectral pixel vector, $s$ is a spectral
+signature, as well as radar target
+detection, where $y$ is a complex baseband snapshot and $\theta$ is a (possibly complex) target amplitude~\cite{kelly1986adaptive,kay1998detection}.
+
+We consider the composite hypothesis test
+\begin{align}
+    \Hnull &: \quad \theta = 0 , \nonumber \\
+    \Halt  &: \quad \theta > 0 \quad \text{or} \quad \theta \neq 0,
+    \label{eq:hypotheses}
+\end{align}
+The
+one-sided formulation is appropriate for HSI, where the target amplitude
+$\theta \geq 0$ is physical.  In radar applications the amplitude can be
+arbitrary in sign (or complex-valued), leading to a two-sided test ($\theta \neq 0 $).
+Fig.~\ref{fig:pavia_patch} illustrates the additive model on a real hyperspectral scene.
+
+\input{figures/fig_pavia_patch}
+
+
+The classical large-sample tests for a composite scalar-parameter problem are the
+\emph{Rao} test, the \emph{Wald} test, and the \emph{generalized
+likelihood ratio test} (GLRT) --- the dominant family in adaptive
+detection~\cite{kelly1986adaptive,robey1992cfar,kraut2001adaptive,vinGRLT}.
+Under standard regularity conditions, these tests are asymptotically
+equivalent~\cite{kay1998detection}. In this work, we focus on the LMP test,
+which in our setting coincides with the one-sided Rao
+test~\cite{rao1948large}, for its compatibility with score-based background
+learning~\cite{kay1989asymptotically,demaio2007rao}:
+
+
+Let $p_y(y;\theta)$ denote the likelihood under amplitude $\theta$, and define
+\begin{align}
+    u(y; \theta)
+    &= \frac{\partial}{\partial \theta} \ln p_y(y;\theta), \nonumber\\
+    I(\theta)
+    &= \E_\theta\!\left[u^2(y;\theta)\right],
+\end{align}
+the score and Fisher information with respect to $\theta$. The LMP detector is
+\begin{align}
+    T_{\mathrm{LMP}}(y)
+    &= \frac{u(y;\,0)}{\sqrt{I(0)}}.
+    \label{eq:lmp_general}
+\end{align}
+Under $\Hnull$, $T_{\mathrm{LMP}}$ has zero mean and unit variance by
+construction; asymptotic normality holds in the classical regime of many
+i.i.d.\ observations~\cite{kay1998detection}, which we do not rely on here.
+% Under $\Hnull$, $T_{\mathrm{LMP}}$ is asymptotically distributed as $\N(0,1)$. 
+In the  additive noise formulation of~(\ref{eq:additive_model}), the test reduces to
+\begin{align}
+    T_{\mathrm{LMP}}(y)
+    &= \frac{-s^\top \score(y)}{\sqrt{s^\top \Psi\, s}}.
+    \label{eq:lmp_additive}
+\end{align}
+so the detector depends on the background only through the score and its covariance:
+\begin{align}
+    \score(w) &= \nabla_w \log p_w(w), \nonumber\\
+    \Psi &= \E\left[\score(w)\score^\top(w)\right].
+    \label{eq:fi_add}
+\end{align}

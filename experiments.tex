@@ -1,0 +1,90 @@
+\chapter{Experiments}
+\label{sec:experiments}
+% ============================================================
+We evaluate the proposed DART(S) detectors on three real hyperspectral
+scenes: the Pavia University dataset~\cite{paviau_gic}, a $610\times340$
+scene with 103 spectral bands and nine labeled land-cover classes plus an
+unlabeled background, the San Diego I airport image, a $100\times100$ scene
+with 189 spectral bands containing real aircraft, and the Salinas scene \cite{salinas_data},
+$512\times217$ with 204 spectral bands and sixteen labeled crop classes.
+Hyperspectral data are severely ill-conditioned: training score networks
+directly on raw spectra failed, full whitening amplifies the near-null
+spectral directions by orders of magnitude and flattens the multimodal
+structure the learned score relies on, and dimensionality reduction such as
+PCA may discard directions containing the unknown target signature. On
+every scene we therefore normalize the inputs of the proposed detectors
+with a fixed shrinkage whitening $W=(R+\lambda_w I)^{-1/2}D^{-1/2}$
+estimated from the training background, where $D$ and $R$ are the variances
+and the correlation matrix of the secondary samples and $\lambda_w=2$. It
+preserves the original dimension and decorrelates only mildly, which
+conditions the optimization while keeping that structure intact.
+
+
+\section{IID background}
+\label{sec:exp-iid}
+
+To approximate the i.i.d.\ setting of Section~\ref{sec:score_matching_detection}, we sample background pixels at random from one or more labeled classes, split them into disjoint training and test sets, and plant a class-mean signature $s$ in a random fraction of the test pixels under the additive model~\eqref{eq:additive_model} with $\theta=0.15$.
+We compare AMF~\cite{robey1992cfar,kelly1986adaptive}, GMM-Levin~\cite{levin2019cluster}, LRao~\cite{lrao2026}, and our DART detector. LRao is trained with its published signal-aware objective and robust input normalization, with a score network matched to DART's architecture.
+
+\input{figures/fig_iid_grid}
+
+The first simulation draws the background from a single labeled class, which makes the comparison with the AMF most direct and isolates the regularizing effect of denoising. The first panel of Fig.~\ref{fig:ablation_single} agrees with the Gaussian special case of Section~\ref{sec:special}: the AMF degrades sharply as $n$ approaches the ambient dimension, whereas the implicitly loaded DART is unaffected. LRao is the most effective detector at the smallest sample sizes, and DART leads beyond roughly one hundred samples.
+
+The second simulation combines pixels from six labeled classes into a proportionally mixed background, shifting the emphasis from small-sample stability to the expressive power of the learned score under model mismatch (second panel). DART leads across nearly the entire range of $n$, as the learned score captures non-Gaussian structure that a single Gaussian cannot represent. LRao is the most effective of the remaining detectors at small and moderate sample sizes, and GMM-Levin, whose parametric mixture is well matched to this background, overtakes it at larger $n$.
+
+
+\section{Correlated background}
+\label{sec:spatial}
+
+We now turn to a more realistic setting and evaluate DARTS on Pavia
+University, San Diego I, and Salinas. For each scene, we use spatially disjoint training and test boxes, plant targets under the additive model in $10\%$ of the test pixels, and compare local AMF, GMM-Levin, and LRao against the spatially adapted DARTS ($\lambda=0.1$, with a $7\times 7$
+neighborhood and $K=7$ pooled neighbors), together with four recent deep detectors, OS-VAE ~\cite{osvae}, HTD-Net ~\cite{htd-net}, THANTD ~\cite{thantd}, and TSTTD ~\cite{tsttd}, each first validated at its published performance on its own benchmark and then trained with its own recipe from the same prior signature and target-free
+secondary pixels.
+In our runs these baselines were not competitive in this regime and are
+therefore omitted from the tables; we defer their detailed treatment to
+future work.
+As ablations we vary the two ingredients of DARTS in turn
+(Table~\ref{tab:spatial}, lower block): the conditioning of the score, by
+inserting the unconditioned DART score into the normalized
+statistic~\eqref{eq:local_normalized_rao_vector}, and the shrinkage
+$\lambda$ of the local score covariance toward the global one. Removing
+both recovers the global DART detector.
+LRao is trained as its authors prescribe, with early stopping on a held-out validation cost;
+the 20\% validation split leaves it fewer secondary pixels than the other
+detectors. We report the area under the ROC curve (AUC), the partial AUC
+over false alarm rates below $0.05$ (pAUC$_{0.05}$), the detection rate at
+a $0.05$ false alarm rate ($P_d@0.05$), and empirical false alarm rates
+$\hat P_{fa}$ at thresholds set from the training background scores.
+
+\input{tables/tab_spatial}
+
+
+On Pavia, DARTS attains the highest pAUC, AUC and $P_d$ among the methods
+considered, and its largest per class false alarm rate is the closest to
+the nominal level. The baselines rank lower, and under a single global
+threshold their per class rates depart further from the nominal level.
+
+The ablations isolate the contribution of each ingredient. Local
+normalization is valuable on its own: inserting the unconditioned score
+into the normalized statistic improves detection substantially over the raw
+global statistic. Most of this gain persists when the local score
+covariance is shrunk toward the global one, which suggests that the removal
+of the local score mean accounts for much of the effect. Normalization
+alone, however, is not sufficient. The unconditioned score remains well
+below DARTS at matched $\lambda$, which indicates that the benefit of the
+neighborhood lies in conditioning the learned score rather than in
+correcting it after training. The value of $\lambda$ has only a minor
+effect on detection and mainly governs the worst class false alarm rate.
+
+
+\input{tables/tab_sandiego}
+
+Table~\ref{tab:sandiego} reports the same protocol on San Diego I and
+Salinas. The target amplitude is reduced to $\theta=0.03$, where the scenes
+remain challenging; at larger amplitudes the detectors saturate.
+The results follow the same pattern, with DARTS comparing favorably on
+both scenes. The local AMF is the strongest baseline here, and on Salinas,
+whose large homogeneous fields are well matched to a local Gaussian model,
+it comes close to DARTS. Amplitude sweeps and the reuse of a single learned
+background model across additional target signatures are demonstrated in the
+accompanying code repository.

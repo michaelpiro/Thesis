@@ -1,0 +1,26 @@
+\chapter{Discussion and Future Work}
+\label{chap:conclusion}
+\label{sec:discussion}
+
+We proposed DART, a denoising-score-assisted Rao detector that combines
+classical weak-target detection with score-based background learning, and
+its spatially adapted extension DARTS. The learned background model is
+reusable across target signatures, and in the affine Gaussian case DART
+reduces to a diagonally loaded adaptive matched filter, explaining its
+finite-sample robustness.
+
+Many directions remain open. First, stronger score-learning objectives may
+improve detection; in particular, flow-matching or multi-noise
+diffusion-style alternatives could learn more accurate scores. Second,
+DARTS contains several manually selected hyperparameters, including the
+network size, neighborhood size, number of neighbors, and
+the shrinkage parameter $\lambda$; automatic tuning using only secondary
+data is an important practical next step. Finally, robustness to target
+leakage in the secondary data and a systematic ablation of the whitening
+front-end remain to be studied.
+
+Overall, DART shows that score-based learning can serve as a focused
+replacement for the unknown background model inside a classical detector,
+rather than as an end-to-end learned classifier, extending adaptive
+detection beyond restrictive Gaussian assumptions while preserving
+interpretability and calibration.

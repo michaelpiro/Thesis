@@ -1,0 +1,72 @@
+% Adapted from the MLSP 2026 poster (column 3): the DARTS architecture and
+% pipeline.  Replaces Fig. 1 (fig:darts-architecture) of the MLSP paper.
+\begin{figure}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=0.5cm, y=0.5cm, line cap=round, font=\footnotesize\linespread{1}\selectfont,
+  dbox/.style={draw=pmuted!60, fill=white, rounded corners=1mm, line width=0.5pt,
+               align=center, inner sep=1.2mm},
+  cnet/.style={draw=pmuted!50, fill=white, rounded corners=1.5mm, line width=0.55pt,
+               align=center, inner sep=1.2mm},
+  darr/.style={-stealth, line width=0.7pt, pnavy!75}]
+  % ================= LEARNING TIME =================
+  \draw[pnavy!70, dashed, line width=0.6pt, rounded corners=1.5mm] (0,6.8) rectangle (27.2,22.4);
+  \node[anchor=north west, font=\footnotesize\bfseries, text=pnavy] at (0.4,22.2) {Learning time};
+  % k x k neighbourhood grid
+  \begin{scope}[shift={(1.2,16.4)}]
+    \foreach \x in {0,...,6} \foreach \y in {0,...,6}
+      \draw[pmuted!45, line width=0.3pt] (\x*0.6,\y*0.6) rectangle (\x*0.6+0.6,\y*0.6+0.6);
+    \foreach \x/\y in {1/5, 5/5, 1/1, 5/2, 0/3, 3/6}
+      \fill[pbrown!32] (\x*0.6+0.03,\y*0.6+0.03) rectangle (\x*0.6+0.57,\y*0.6+0.57);
+    \fill[pnavy] (3*0.6+0.03,3*0.6+0.03) rectangle (3*0.6+0.57,3*0.6+0.57);
+  \end{scope}
+  % legend: center pixel + neighbourhood definition
+  \node[anchor=north west, align=left, font=\scriptsize, text=pbody] at (0.9,10.2)
+    {\textcolor{pnavy}{$\blacksquare$}\ $w_i$ -- center pixel\\[0.3mm]
+     \textcolor{pbrown!70}{$\blacksquare$}\ $\{w_j\}_{j \in \mathcal{A}_i}$ -- local window};
+  % ---- cond. net container ----
+  \draw[pmuted!50, line width=0.55pt, rounded corners=1.5mm] (6.8,10.8) rectangle (26.8,21.2);
+  \node[anchor=north west, font=\footnotesize\bfseries, text=pmuted] at (7.15,20.95) {cond.\ net $\widehat{\psi}_i$};
+  \node[dbox] (enc)  at (11.9,18.4) {shared encoder $e_\eta$\\ $z_i = e_\eta(w_i),\ z_j = e_\eta(w_j)$};
+  \node[dbox] (pool) at (21.9,18.4) {$K$-NN in latent space\\ pooled context $c_i$};
+  \node[dbox] (sc)   at (16.8,12.9) {score head (MLP)\\ $\widehat{\psi}_i = \psi_\eta(w_i,\, z_i,\, c_i)$};
+  \draw[darr] (5.4,18.4) -- (enc.west);
+  \draw[darr] (enc) -- (pool);
+  % z_i and c_i drop into the score head (right angles, separate entry points)
+  \draw[darr] (enc.south) -- ++(0,-1.6) -| ([xshift=-0.67cm]sc.north);
+  \node[font=\scriptsize, text=pnavy, anchor=west] at ([shift={(0.22,-0.75)}]enc.south) {$z_i$};
+  \draw[darr] (pool.south) -- ++(0,-2.6) -| ([xshift=+0.67cm]sc.north);
+  \node[font=\scriptsize, text=pnavy, anchor=west] at ([shift={(0.22,-0.75)}]pool.south) {$c_i$};
+  % raw center pixel skip
+  \draw[darr] (5.0,16.4) |- (sc.west);
+  \node[font=\scriptsize, text=pbrown, anchor=south west] at (5.6,13.05) {$w_i$};
+  % ---- statistics -> threshold (below the container) ----
+  \node[dbox] (st) at (16.8,8.7) {statistic $\widehat{T}_i^{\,\mathrm{DARTS}}(w_i)$};
+  \node[dbox, right=0.55cm of st] (ga) {$\gamma = \hat{q}_{\,1-\alpha}$};
+  \draw[darr] (sc.south) -- (st.north);
+  \draw[darr] (st) -- (ga);
+  % ================= TEST TIME =================
+  \draw[pbrown!75, dashed, line width=0.6pt, rounded corners=1.5mm] (0,0.0) rectangle (27.2,5.6);
+  \node[anchor=north west, font=\footnotesize\bfseries, text=pbrown] at (0.4,5.4) {Test time};
+  \node[dbox, anchor=west] (m1) at (1.0,2.5) {pixel + nbhd\\ $y_i,\ \{y_j\}_{j\in\mathcal{A}_i}$};
+  \node[cnet, right=0.46cm of m1] (m2) {cond.\ net $\widehat{\psi}_i$\\ (frozen)};
+  \node[dbox, right=0.46cm of m2] (m3) {statistic\\ $\widehat{T}_i^{\,\mathrm{DARTS}}(y_i)$};
+  \node[dbox, right=0.46cm of m3] (m4) {declare $\Halt$ if\\ $\widehat{T}_i^{\,\mathrm{DARTS}} \gtrless \gamma$};
+  \draw[darr] (m1) -- (m2);
+  \draw[darr] (m2) -- (m3);
+  \draw[darr] (m3) -- (m4);
+  % gamma feeds the test-time decision (right angles, jog in the gap)
+  \draw[darr] (ga.south) -- ++(0,-2.1) -| (m4.north);
+  \node[text=pnavy, anchor=west] at ([shift={(0.2,-1.7)}]ga.south) {$\gamma$};
+\end{tikzpicture}}
+\caption{DARTS architecture and pipeline. A shared encoder $e_\eta$ maps the
+center pixel and the pixels of its local window $\mathcal{A}_i$ to
+low-dimensional latents. The $K$ nearest neighbor latents are pooled into a
+local context vector $c_i$, and the score head receives the raw center
+pixel, its latent $z_i$, and $c_i$. The conditional network is trained end
+to end with the single DSM objective; the locally normalized statistic
+\eqref{eq:local_normalized_rao_vector} evaluated on the target-free
+secondary pixels sets the threshold $\gamma$, which is then applied to the
+test pixels.}
+\label{fig:darts-architecture}
+\end{figure}

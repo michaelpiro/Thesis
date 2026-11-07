@@ -1,0 +1,60 @@
+\chapter{Spatially Adapted Detector}
+\label{sec:spatial_score_matching}
+
+In hyperspectral and radar detection the background is often only locally
+homogeneous, and the most informative secondary samples for calibration are
+the neighboring target-free cells rather than draws from the full scene.
+DARTS, developed next, adapts the denoising detector to this setting.
+
+Let $\Omega$ denote the set of image pixels and let $y_i \in \mathbb{R}^d$ be the
+spectral vector at pixel $i \in \Omega$. For each pixel, let
+$\mathcal{A}_i$ denote a local neighborhood. We define a conditional score
+estimator
+\begin{equation}
+\widehat{\psi}_i(y_i)
+=
+\widehat{\psi}_{\eta}
+\left(
+y_i;\{y_j : j \in \mathcal{A}_i\}
+\right),
+\label{eq:local_score_estimator}
+\end{equation}
+where $\eta$ are learned parameters. We instantiate $\widehat{\psi}_i$ with a
+shared multilayer perceptron (MLP) encoder that embeds the center pixel and each pixel in its local
+window into a low-dimensional latent space. The $K$ nearest neighbors in latent
+Euclidean distance are pooled into a context feature, which is concatenated with
+the center embedding and decoded by a second MLP into the score. As before, the
+model is trained on denoising residuals, with noise added only to the test
+pixel. The encoder and the score head are trained jointly by minimizing this
+single DSM objective end to end; no auxiliary loss is used to shape the latent
+space. The architecture and the resulting pipeline are shown in Fig.~\ref{fig:darts-architecture}.
+
+\input{figures/fig_darts_pipeline}
+
+At test time, DARTS plugs the neighbor-conditioned score into the LMP statistic. It is designed for heterogeneous background and we therefore normalize it using local score covariances
+\begin{equation}
+\widehat{T}_i^{\,\mathrm{DARTS}}
+=\frac{-s^\top\!\left(\widehat{\psi}_i(y_i)-\widehat{m}_{\psi,i}\right)}
+      {\sqrt{s^\top \widetilde{\Psi}_i\, s+\epsilon}},
+\label{eq:local_normalized_rao_vector}
+\end{equation}
+where 
+\begin{align}
+\widehat{m}_{\psi,i}&=\frac{1}{|\mathcal{A}_i|}\sum_{j\in\mathcal{A}_i}
+\widehat{\psi}_j(y_j),\nonumber\\
+\widehat{\Psi}_i&=\frac{1}{|\mathcal{A}_i|}\sum_{j\in\mathcal{A}_i}
+\left(\widehat{\psi}_j(y_j)-\widehat{m}_{\psi,i}\right)
+\left(\widehat{\psi}_j(y_j)-\widehat{m}_{\psi,i}\right)^{\!\top},
+\label{eq:local_score_covariance}
+\end{align}
+and $\epsilon>0$ is a small numerical floor. In practice, the local covariance
+estimate can be noisy when only a limited number of reliable neighbors is
+available, so we regularize it toward the global score covariance:
+\begin{equation}
+\widetilde{\Psi}_i
+=
+(1-\lambda)\widehat{\Psi}_i+\lambda\widehat{\Psi},
+\qquad 0\leq\lambda\leq1.
+\label{eq:shrunk_local_fisher}
+\end{equation}
+where $\hat{\Psi}$ is defined in (\ref{eq:psi_hat}).

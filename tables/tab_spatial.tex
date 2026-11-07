@@ -1,0 +1,41 @@
+% Table 1 of the MLSP paper (tab:spatial), verbatim.
+\begin{table}[htbp]
+\centering
+\caption{Spatial detection on the correlated Pavia-U scene ($\theta=0.15$,
+5 seeds). $\hat P_{fa}^{\max}$ is the largest per-class false alarm rate at
+a threshold set to the empirical $0.05$ upper quantile of the training
+background scores; the nominal level is $0.05$. Bold marks the best value
+within each block. The ablations vary two ingredients of DARTS
+independently: whether the score in
+Eq.~\eqref{eq:local_normalized_rao_vector} is conditioned on the
+neighboring pixels, and the shrinkage $\lambda$ of the local score
+covariance toward the global one in
+Eq.~\eqref{eq:shrunk_local_fisher}. A dash in the $\lambda$ column
+indicates that no local score normalization is applied.}
+\label{tab:spatial}
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}lc ccc c@{}}
+\toprule
+ & & \multicolumn{3}{c}{Detection} & Calibration\\
+\cmidrule(lr){3-5}\cmidrule(l){6-6}
+Detector & $\lambda$ & pAUC$_{0.05}$ & AUC & $P_d@0.05$ & $\hat P_{fa}^{\max}$\\
+\midrule
+DARTS      & 0.1 & \textbf{0.556} & \textbf{0.926} & \textbf{0.730} & \textbf{0.088}\\
+\addlinespace[2pt]
+AMF        & --  & 0.238 & 0.786 & 0.346 & 0.103\\
+GMM-Levin  & --  & 0.129 & 0.773 & 0.229 & 0.455\\
+LRao       & --  & 0.137 & 0.713 & 0.220 & 0.761\\
+\midrule
+\multicolumn{6}{@{}l}{\emph{Ablations --- score conditioning and shrinkage $\lambda$:}}\\
+\addlinespace[1pt]
+\quad conditioned            & 0.9 & \textbf{0.533} & \textbf{0.925} & \textbf{0.728} & 0.066\\
+\quad conditioned            & 1.0 & 0.525 & 0.924 & 0.726 & 0.062\\
+\addlinespace[2pt]
+\quad unconditioned          & 0.1 & 0.304 & 0.846 & 0.453 & 0.038\\
+\quad unconditioned          & 0.9 & 0.311 & 0.846 & 0.443 & \textbf{0.019}\\
+\quad unconditioned, no norm.\ & --  & 0.153 & 0.750 & 0.254 & 0.060\\
+\bottomrule
+\end{tabular}
+\end{table}

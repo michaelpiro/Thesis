@@ -1,0 +1,5 @@
+\chapter{Previous Work}
+\label{chap:pw}
+Our proposed DART framework is close in spirit to recent work that combines machine learning with classical detection structure. Self-supervised covariance learning methods also use learning for background modeling, but remain within a Gaussian model and therefore estimate only second-order background structure \cite{diskin2024self}. The closest comparison is the recently proposed learned Rao detector (LRao) of \cite{lrao2026}, which introduced the key idea our method builds on, learning a weak-signal detector from noise-only samples with the unknown signature entering only at test time. LRao learns a transformation that maximizes the linear Fisher information, estimated by probing the noise data with small artificial shifts. Since this objective is maximized by the score function itself, the two methods target the same quantity; DART differs in estimating the score directly via DSM, which we find
+somewhat more stable and which additionally provides a regularizing effect.
+

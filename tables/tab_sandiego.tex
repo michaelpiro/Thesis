@@ -1,0 +1,34 @@
+% Table 2 of the MLSP paper (tab:sandiego), verbatim.  The paper sets it as
+% a two-column table*; here the two scenes are stacked as two blocks so the
+% table fits the A4 text width without shrinking.
+\begin{table}[htbp]
+\centering
+\caption{Spatial detection at a common target amplitude $\theta=0.03$
+(5 seeds): San Diego I with the real aircraft signature, Salinas with the
+brocoli-green-weeds signature. DARTS uses local moment normalization
+($\lambda=0.1$), AMF estimates its mean and covariance in a sliding window,
+while GMM-Levin and LRao use their global statistics.}
+\label{tab:sandiego}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}l c cccc@{}}
+\toprule
+Detector & $\lambda$ & pAUC$_{0.05}$ & AUC & $P_d$@0.05 & $\hat P_{fa}$\\
+\midrule
+\multicolumn{6}{@{}l}{\emph{San Diego I}}\\
+\addlinespace[1pt]
+DARTS       & 0.1 & \textbf{0.634} & \textbf{0.956} & \textbf{0.791} & \textbf{0.020}\\
+AMF         & --  & 0.361 & 0.919 & 0.607 & 0.054\\
+GMM-Levin   & --  & 0.275 & 0.777 & 0.397 & 0.025\\
+LRao        & --  & 0.177 & 0.776 & 0.276 & 0.041\\
+\midrule
+\multicolumn{6}{@{}l}{\emph{Salinas}}\\
+\addlinespace[1pt]
+DARTS       & 0.1 & 0.766 & \textbf{0.972} & \textbf{0.882} & \textbf{0.009}\\
+AMF         & --  & \textbf{0.769} & 0.968 & 0.866 & 0.055\\
+GMM-Levin   & --  & 0.038 & 0.864 & 0.062 & 0.132\\
+LRao        & --  & 0.169 & 0.845 & 0.237 & 0.084\\
+\bottomrule
+\end{tabular}
+\end{table}

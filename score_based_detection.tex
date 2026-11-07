@@ -1,0 +1,132 @@
+\chapter{Score Matching Based Detection}
+\label{score_matching_detection}
+\label{sec:score_matching_detection}
+We now turn to the main methodological step: estimating the background score from target-free secondary data and plugging it into the LMP detector. Let
+\begin{equation}
+    w_1,\ldots,w_n \overset{\mathrm{i.i.d.}}{\sim} p_w
+\end{equation}
+denote the secondary samples.
+
+To estimate the background score without evaluating the normalizing constant of $p_w$, we can use implicit score matching (ISM) introduced by Hyv\"arinen~\cite{hyvarinen2005estimation}:
+\begin{equation}
+    \min_\eta \frac{1}{n} \sum_i \left[
+        \tfrac{1}{2}\|\score_\eta(w_i)\|^2
+        + \operatorname{tr}\!\bigl(\nabla_w \score_\eta(w_i)\bigr)
+    \right].
+\end{equation}
+This objective contains the divergence term, i.e. the trace of the Jacobian of $\score_\eta$, which is costly to evaluate and back-propagate through for neural models. We therefore turn to
+\emph{denoising} score matching (DSM)~\cite{vincent2011connection},
+which replaces that term by a Gaussian-perturbation regression with a fixed corruption
+level $\sigma>0$. For each secondary sample we draw a corrupted copy
+\begin{align}
+    \tilde w_i &= w_i + \sigma\varepsilon_i,
+    \nonumber\\
+    \varepsilon_i&\sim \N(0,I_d),
+\end{align}
+and train $\score_\eta:\R^d\to\R^d$ by minimizing
+\begin{equation}
+    \hat\eta
+    = \arg\min_\eta
+    \frac1n\sum_{i=1}^n
+    \left\|
+    \score_\eta(\tilde w_i) - \frac{w_i-\tilde w_i}{\sigma^2}
+    \right\|^2.
+    \label{eq:DART_objective}
+\end{equation}
+The regression target $(w_i-\tilde w_i)/\sigma^2$ is the analytic score of the Gaussian
+corruption kernel. At the population optimum,
+\begin{align}
+    \score_{\eta^*}(x)
+    &= \nabla_x \log q_\sigma(x)\nonumber\\
+    q_\sigma &= p_w * \mathcal{N}(0,\sigma^2 I_d),
+\end{align}
+so $\score_{\hat\eta}$ estimates the score of the noise-smoothed density $q_\sigma$, and
+tends to $\nabla\log p_w$ as $\sigma\to0$ (Tweedie's formula~\cite{efron2011tweedie}%
+). 
+
+The noise level $\sigma$ governs a bias-variance tradeoff: a small $\sigma$ keeps $q_\sigma$ close to $p_w$, while a larger one stabilizes estimation and keeps the score informative away from the training samples.
+Motivated by the analogy with kernel bandwidth selection~\cite{silverman1986density}, we set $\sigma$ proportional to the empirical RMS scale of the data, $\sigma^2 = \rho\,\hat{s}^2$ with $\hat{s}^2 = \operatorname{tr}(\widehat{\Sigma}_n)/d$, where $\widehat{\Sigma}_n$ is the empirical covariance of the background samples, computed in the normalized coordinates on which the score network operates.
+The dimensionless factor $\rho$ is small, so $\sigma$ remains well below the data scale, and decreases as the number of secondary samples grows, just as a kernel bandwidth narrows with sample size.
+After learning the score, we estimate the score covariance from the same secondary samples:
+\begin{align}
+    \widehat{\Psi}
+    = \frac{1}{n}\sum_{i=1}^n
+    \score_{\hat\eta}(w_i)\score_{\hat\eta}(w_i)^\top.
+    \label{eq:psi_hat}
+\end{align}
+This yields the proposed DART detector
+\begin{align}
+    \widehat T_{\mathrm{DART}}(y)
+    = \frac{-s^\top \score_{\hat\eta}(y)}
+    {\sqrt{s^\top \widehat{\Psi}\, s}}.
+    \label{eq:lmp_plugin}
+\end{align}
+While the ideal statistic is standardized under $\Hnull$, the null distribution of the plug-in statistic with a learned score is unknown, and its asymptotic normality cannot be established. We therefore set detection thresholds empirically, from an upper quantile of the statistic evaluated on the target-free secondary samples, $\{\widehat T_{\mathrm{DART}}(w_i)\}_{i=1}^n$.
+The complete learning and test procedure is summarized in Fig.~\ref{fig:dart_pipeline}.
+
+\input{figures/fig_dart_pipeline}
+
+\section{Special case: Gaussian background}
+\label{sec:special}
+
+The Gaussian case makes the role of score matching explicit. Suppose
+$
+w \sim \mathcal{N}(\mu,\Sigma)
+$
+and restrict the score model to the affine class
+$
+\psi_\eta(w)=A(w-\mu).
+$
+Since
+\begin{equation}
+\psi(w)=-\Sigma^{-1}(w-\mu),
+\end{equation}
+the affine class is correctly specified.
+
+\noindent\textbf{ISM.}
+Minimizing the implicit score-matching objective over the affine class recovers
+the empirical Gaussian score ~\cite{hyvarinen2005estimation}:
+\begin{equation}
+\hat\psi_{\mathrm{ISM}}(y)=-\hat\Sigma_n^{-1}(y-\hat\mu_n),
+\end{equation}
+where $\hat\mu_n$ and $\hat\Sigma_n$ are the sample mean and covariance.
+Substituting this into the plug-in LMP statistic yields the usual Gaussian
+matched-filter form, i.e. the adaptive matched filter (AMF) ~\cite{robey1992cfar,kelly1986adaptive}.
+
+\noindent\textbf{DSM.}
+Denoising score matching estimates the score of the smoothed density
+$
+q_\sigma = p_w * \mathcal{N}(0,\sigma^2 I)
+$
+rather than that of $p_w$ itself \cite{vincent2011connection}. Equivalently,
+\begin{equation}
+\nabla_{\tilde w}\log q_\sigma(\tilde w)
+=
+\frac{\mathbb{E}[w\mid \tilde w]-\tilde w}{\sigma^2},
+\label{eq:tweedie}
+\end{equation}
+which expresses the score in terms of the posterior mean under Gaussian
+corruption \cite{efron2011tweedie}. For Gaussian clutter,
+\begin{equation}
+    q_\sigma=\mathcal{N}(\mu,\Sigma+\sigma^2 I)
+\end{equation}
+hence
+\begin{equation}
+\hat\psi_{\mathrm{DSM}}(y)
+=
+-(\hat\Sigma_n+R_n)^{-1}(y-\hat\mu_n+r_n).
+\label{eq:gauss_DART_solution0}
+\end{equation}
+where $R_n$ and $r_n$ are empirical moments of the noise. Asymptotically, these residual moments vanish and the DSM score converges to
+\begin{equation}
+\hat\psi_{\mathrm{DSM}}(y)
+\rightarrow
+-(\hat\Sigma_n+\sigma^2 I)^{-1}(y-\hat\mu_n).
+\label{eq:gauss_DART_solution}
+\end{equation}
+Thus, in the affine Gaussian setting, DSM replaces the inverse sample
+covariance by a diagonally loaded inverse covariance. In adaptive detection,
+this is the classical regularization used to stabilize matched-filter
+statistics when $\hat\Sigma_n$ is ill-conditioned or the number of secondary
+samples is small ~\cite{carlson1988covariance}. This connection explains the improved
+small-sample robustness of linear DART in our experiments.

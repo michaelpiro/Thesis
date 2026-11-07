@@ -1,0 +1,42 @@
+% Adapted from the MLSP 2026 poster (column 2): the DART pipeline at
+% learning time and at test time.
+\begin{figure}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=0.5cm, y=0.5cm, line cap=round, font=\footnotesize\linespread{1}\selectfont,
+  dbox/.style={draw=pmuted!60, fill=white, rounded corners=1mm, line width=0.5pt,
+               align=center, inner sep=1.3mm},
+  darr/.style={-stealth, line width=0.7pt, pnavy!75}]
+  % ================= LEARNING TIME =================
+  \draw[pnavy!70, dashed, line width=0.6pt, rounded corners=1.5mm] (0,6.3) rectangle (27.2,11.4);
+  \node[anchor=north west, font=\footnotesize\bfseries, text=pnavy] at (0.4,11.2) {Learning time};
+  \node[dbox, anchor=west] (n1) at (2.3,8.3) {target-free\\ $w_1,\ldots,w_n \overset{\text{iid}}{\sim} p_w$};
+  \node[dbox, right=0.6cm of n1] (n2) {score net $\psi_\eta$\\ DSM training};
+  \node[dbox, right=0.6cm of n2] (n3) {statistics\\ $\widehat{T}_{\mathrm{DART}}(w_i)$};
+  \node[dbox, right=0.6cm of n3] (n4) {threshold\\ $\gamma = \hat{q}_{\,1-\alpha}$};
+  \draw[darr] (n1) -- (n2);
+  \draw[darr] (n2) -- (n3);
+  \draw[darr] (n3) -- (n4);
+  % ================= TEST TIME =================
+  \draw[pbrown!75, dashed, line width=0.6pt, rounded corners=1.5mm] (0,-0.1) rectangle (27.2,4.9);
+  \node[anchor=north west, font=\footnotesize\bfseries, text=pbrown] at (0.4,4.7) {Test time};
+  \node[dbox] (m4) at (n4.center |- 0,2.1) {declare $\Halt$ if\\ $\widehat{T}_{\mathrm{DART}}(y) \gtrless \gamma$};
+  \node[dbox, left=0.6cm of m4] (m3) {statistic\\ $\widehat{T}_{\mathrm{DART}}(y)$};
+  \node[dbox, left=0.6cm of m3] (m2) {score net $\psi_{\hat\eta}$\\ (frozen)};
+  \node[dbox, left=0.6cm of m2] (m1) {test pixel\\ $y_i$};
+  \draw[darr] (m1) -- (m2);
+  \draw[darr] (m2) -- (m3);
+  \draw[darr] (m3) -- (m4);
+  % gamma feeds the test-time decision
+  \draw[darr] (n4.south) -- (m4.north);
+  \node[text=pnavy, anchor=west] at ([shift={(0.3,-1.2)}]n4.south) {$\gamma$};
+\end{tikzpicture}}
+\caption{The DART pipeline. At learning time the score network is trained
+on the target-free secondary samples with the DSM objective
+\eqref{eq:DART_objective}, the statistic $\widehat{T}_{\mathrm{DART}}$ is
+evaluated on the same samples, and the detection threshold $\gamma$ is set
+to its empirical upper quantile. At test time the frozen network is applied
+to each pixel and the statistic \eqref{eq:lmp_plugin} is compared with
+$\gamma$.}
+\label{fig:dart_pipeline}
+\end{figure}

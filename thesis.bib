@@ -1,0 +1,432 @@
+% =========================================================================
+% refs_new.bib
+% Bibliography for: Target Detection via Denoising Score Matching
+%
+% Contains ONLY the 23 entries actively cited in final .tex.
+% Entries dropped (present in refs.bib but never cited in active text):
+%   manolakis2016hyperspectral, scott1992multivariate, middleton1966canonically,
+%   miller1972detectors, lu1981detection, middleton1986tutorial, reed1974rapid,
+%   kraut1999cfar, kraut98, manolakis2014detection, matteoli2010tutorial,
+%   spectralVariabilitySurvey, rotman2022segmentedMF, rao1945information,
+%   cramer1946contribution, lehmann2005testing, vanTrees1968detection,
+%   cranmer2015approximating, moustakides2019training, rizvi2023learning,
+%   diskin2022cfarnet, manolakis09, vin_bessonGRLT, manolakis02, htd-net,
+%   hyvarinen2007connections, lipman2023flow, liu2022rectified, albergo2023building,
+%   venkatakrishnan2013plug, romano2017little, pourya2026flower, martin2025pnpflow,
+%   pokle2024otode, zhang2024flowpriors, benhamu2024dflow, song2023pseudoinverse,
+%   chung2023diffusion, zhu2023diffpir, amos2017optnet, hoerl1970ridge,
+%   boyd2011distributed, vincent2021combining, ma2025smglrt, ma2026dltd.
+%
+% KEY FIX: refs.bib had @article{kraut2001,...} but final.tex cites
+%   \cite{kraut2001adaptive}. Renamed to kraut2001adaptive here.
+%
+% Formatting conventions:
+%   - Author names: Surname, F. M. (initials only)
+%   - Page ranges: en-dash (--)
+%   - Protected case: {G}aussian, {CFAR}, {R}ao, etc.
+% =========================================================================
+
+
+% =========================================================================
+% CLASSICAL LOCALLY OPTIMUM DETECTION
+% =========================================================================
+
+@article{capon1961asymptotic,
+  author  = {Capon, J.},
+  title   = {On the asymptotic efficiency of locally optimum detectors},
+  journal = {IRE Transactions on Information Theory},
+  volume  = {7},
+  number  = {2},
+  pages   = {67--71},
+  year    = {1961},
+  doi     = {10.1109/TIT.1961.1057628}
+}
+
+
+% =========================================================================
+% ADAPTIVE DETECTION — GAUSSIAN / PARAMETRIC
+% =========================================================================
+
+@article{kelly1986adaptive,
+  author  = {Kelly, E. J.},
+  title   = {An Adaptive Detection Algorithm},
+  journal = {IEEE Transactions on Aerospace and Electronic Systems},
+  volume  = {AES-22},
+  number  = {2},
+  pages   = {115--127},
+  year    = {1986},
+  doi     = {10.1109/TAES.1986.310745}
+}
+
+@article{robey1992cfar,
+  author  = {Robey, F. C. and Fuhrmann, D. R. and Kelly, E. J. and Nitzberg, R.},
+  title   = {A {CFAR} Adaptive Matched Filter Detector},
+  journal = {IEEE Transactions on Aerospace and Electronic Systems},
+  volume  = {28},
+  number  = {1},
+  pages   = {208--216},
+  year    = {1992},
+  doi     = {10.1109/7.135446}
+}
+
+@article{vinGRLT,
+  author={Vincent, F. and Besson, O.},
+  journal={IEEE Transactions on Geoscience and Remote Sensing}, 
+  title={One-Step Generalized Likelihood Ratio Test for Subpixel Target Detection in Hyperspectral Imaging}, 
+  year={2020},
+  volume={58},
+  number={6},
+  pages={4479--4489}
+  }
+
+% Renamed from kraut2001 -> kraut2001adaptive to match \cite{kraut2001adaptive} in final.tex.
+@article{kraut2001adaptive,
+  author  = {Kraut, S. and Scharf, L. L. and McWhorter, L. T.},
+  title   = {Adaptive subspace detectors},
+  journal = {IEEE Transactions on Signal Processing},
+  volume  = {49},
+  number  = {1},
+  pages   = {1--16},
+  year    = {2001},
+  doi     = {10.1109/78.890324}
+}
+
+@article{carlson1988covariance,
+  author  = {Carlson, B. D.},
+  title   = {Covariance matrix estimation errors and diagonal loading
+             in adaptive arrays},
+  journal = {IEEE Transactions on Aerospace and Electronic Systems},
+  volume  = {24},
+  number  = {4},
+  pages   = {397--401},
+  year    = {1988},
+  doi     = {10.1109/7.7181}
+}
+
+
+% =========================================================================
+% ADAPTIVE DETECTION — NON-GAUSSIAN / RAO-BASED
+% =========================================================================
+
+@article{kay1989asymptotically,
+  author  = {Kay, S. M.},
+  title   = {Asymptotically optimal detection in incompletely characterized
+             non-{G}aussian noise},
+  journal = {IEEE Transactions on Acoustics, Speech, and Signal Processing},
+  volume  = {37},
+  number  = {5},
+  pages   = {627--633},
+  year    = {1989},
+  doi     = {10.1109/29.17554}
+}
+
+@article{demaio2007rao,
+  author  = {De Maio, A.},
+  title   = {Rao Test for Adaptive Detection in {G}aussian Interference
+             With Unknown Covariance Matrix},
+  journal = {IEEE Transactions on Signal Processing},
+  volume  = {55},
+  number  = {7},
+  pages   = {3577--3584},
+  year    = {2007},
+  doi     = {10.1109/TSP.2007.894238}
+}
+
+
+
+% =========================================================================
+% RAO / SCORE TEST — FOUNDATIONAL
+% =========================================================================
+
+@article{rao1948large,
+  author  = {Rao, C. R.},
+  title   = {Large sample tests of statistical hypotheses concerning several
+             parameters with applications to problems of estimation},
+  journal = {Mathematical Proceedings of the Cambridge Philosophical Society},
+  volume  = {44},
+  number  = {1},
+  pages   = {50--57},
+  year    = {1948},
+  doi     = {10.1017/S0305004100023987}
+}
+
+
+% =========================================================================
+% STATISTICAL SIGNAL PROCESSING — TEXTBOOK
+% =========================================================================
+
+@book{kay1998detection,
+  author    = {Kay, S. M.},
+  title     = {Fundamentals of Statistical Signal Processing,
+               Volume {II}: Detection Theory},
+  publisher = {Prentice Hall},
+  year      = {1998}
+}
+
+
+% =========================================================================
+% KERNEL BANDWIDTH / DENSITY ESTIMATION
+% =========================================================================
+
+@book{silverman1986density,
+  author    = {Silverman, B. W.},
+  title     = {Density Estimation for Statistics and Data Analysis},
+  series    = {Monographs on Statistics and Applied Probability},
+  volume    = {26},
+  publisher = {Chapman and Hall},
+  address   = {London},
+  year      = {1986}
+}
+
+
+% =========================================================================
+% HYPERSPECTRAL TARGET DETECTION
+% =========================================================================
+
+@ARTICLE{manolakis02,
+  author={Manolakis, D. and Shaw, G.},
+  journal={IEEE Signal Processing Magazine}, 
+  title={Detection algorithms for hyperspectral imaging applications}, 
+  year={2002},
+  volume={19},
+  number={1},
+  pages={29--43},
+  keywords={Detection algorithms;Hyperspectral imaging;Composite materials;Signal processing algorithms;Chemical sensors;Reflectivity;Laboratories;Sensor phenomena and characterization;Atmosphere;Remote sensing},
+  doi={10.1109/79.974724}}
+
+@article{manolakis2014detection,
+  author={Manolakis, D. and Truslow, E. and Pieper, M. and Cooley, T. and Brueggeman, M.},
+  journal={IEEE Signal Processing Magazine}, 
+  title={Detection Algorithms in Hyperspectral Imaging Systems: An Overview of Practical Algorithms}, 
+  year={2014},
+  volume={31},
+  number={1},
+  pages={24--33},
+  keywords={Detectors;Hyperspectral imaging;Reflectivity;Materials;Signal processing algorithms;Object detection},
+  doi={10.1109/MSP.2013.2278915}}
+
+@inproceedings{levin2019cluster,
+  author    = {Levin, I. and Hershkovitz, T. and Rotman, S. R.},
+  title     = {Hyperspectral target detection using cluster-based probability
+               models implemented in a generalized likelihood ratio test},
+  booktitle = {Image and Signal Processing for Remote Sensing {XXV}},
+  series    = {Proc.\ SPIE},
+  volume    = {11155},
+  year      = {2019},
+  doi       = {10.1117/12.2532787}
+}
+
+@article{thantd,
+  author  = {Liu, J. and Wang, H. and Cheng, X. and Xing, Z. and Xu, Z.},
+  title   = {{THANTD}: Triplet Hybrid Attention Network for Hyperspectral
+             Target Detection},
+  journal = {IEEE Journal of Selected Topics in Applied Earth Observations
+             and Remote Sensing},
+  volume  = {18},
+  pages   = {8831--8844},
+  year    = {2025},
+  doi     = {10.1109/JSTARS.2025.3547328}
+}
+
+
+
+@Article{htd-net,
+AUTHOR = {Zhang, G. and Zhao, S. and Li, W. and Du, Q. and Ran, Q. and Tao, R.},
+TITLE = {{HTD}-Net: A Deep Convolutional Neural Network for Target Detection in Hyperspectral Imagery},
+JOURNAL = {Remote Sensing},
+VOLUME = {12},
+YEAR = {2020},
+NUMBER = {9},
+ARTICLE-NUMBER = {1489},
+URL = {https://www.mdpi.com/2072-4292/12/9/1489},
+ISSN = {2072-4292},
+DOI = {10.3390/rs12091489}
+}
+
+
+@misc{paviau_gic,
+  author       = {Gra{\~n}a, M. and Veganzones, M. A. and Ayerdi, B.},
+  title        = {Hyperspectral Remote Sensing Scenes -- {Pavia University}
+                  ({ROSIS}, data courtesy of {Prof.\ Paolo Gamba},
+                  {Univ.\ of Pavia})},
+  howpublished = {Grupo de Inteligencia Computacional ({GIC}), {UPV/EHU}},
+  note         = {\url{https://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes}},
+  year         = {2011}
+}
+
+@dataset{salinas_data,
+  author       = {{National Aeronautics and Space Administration, Jet Propulsion Laboratory}},
+  title        = {Salinas Hyperspectral Dataset},
+  month        = jun,
+  year         = 2025,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.15771735},
+  url          = {https://doi.org/10.5281/zenodo.15771735},
+}
+
+
+% =========================================================================
+% NEURAL NETWORK DETECTORS
+% =========================================================================
+
+@inproceedings{lippmann1988adaptive,
+  author    = {Lippmann, R. P. and Beckman, P.},
+  title     = {Adaptive Neural Net Preprocessing for Signal Detection
+               in Non-{G}aussian Noise},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume = {1},
+  pages     = {124--132},
+  year      = {1988}
+}
+
+@article{gandhi1997neural,
+  author  = {Gandhi, P. P. and Ramamurti, V.},
+  title   = {Neural networks for signal detection in non-{G}aussian noise},
+  journal = {IEEE Transactions on Signal Processing},
+  volume  = {45},
+  number  = {11},
+  pages   = {2846--2851},
+  year    = {1997},
+  doi     = {10.1109/78.650111}
+}
+
+@article{jarabo2013radar,
+  author  = {Jarabo-Amores, M. P. and {de la Mata-Moya}, D. and
+             Gil-Pita, R. and Rosa-Zurera, M.},
+  title   = {Radar detection with the {N}eyman--{P}earson criterion using
+             supervised-learning-machines trained with the cross-entropy error},
+  journal = {EURASIP Journal on Advances in Signal Processing},
+  volume  = {2013},
+  number  = {44},
+  pages   = {1--10},
+  year    = {2013},
+  doi     = {10.1186/1687-6180-2013-44}
+}
+@article{jarabo2013radar_old,
+  author  = {Jarabo-Amores, M. P. and {de la Mata-Moya}, D. and
+             Gil-Pita, R. and Rosa-Zurera, M.},
+  title   = {Radar detection with the {N}eyman--{P}earson criterion using
+             supervised-learning-machines trained with the cross-entropy error},
+  journal = {EURASIP Journal on Advances in Signal Processing},
+  volume  = {2013},
+  pages   = {44},
+  year    = {2013},
+  doi     = {10.1186/1687-6180-2013-44}
+}
+
+@inproceedings{diskin2024self,
+  author    = {Diskin, T. and Wiesel, A.},
+  title     = {Self-supervised learning for covariance estimation},
+  booktitle = {32nd European Signal Processing Conference (EUSIPCO)},
+  pages     = {2607--2611},
+  year      = {2024},
+  publisher = {IEEE}
+}
+
+@misc{lrao2026,
+  author        = {Zschetzsche, J. and Weimar, M. and Lang, O. and
+                   Schuster, S. and Haberl, A. and Schertler, S. and
+                   Lehner, B. and Reisinger, J. and Huemer, M. and Rotter, S.},
+  title         = {Detection of weak signals under arbitrary noise distributions},
+  year          = {2026},
+  eprint        = {2603.01737},
+  archivePrefix = {arXiv},
+  primaryClass  = {eess.SP}
+}
+
+
+% =========================================================================
+% SCORE MATCHING
+% =========================================================================
+
+@article{hyvarinen2005estimation,
+  author  = {Hyv{\"a}rinen, A.},
+  title   = {Estimation of Non-Normalized Statistical Models by Score Matching},
+  journal = {Journal of Machine Learning Research},
+  volume  = {6},
+  pages   = {695--709},
+  year    = {2005}
+}
+
+@article{vincent2011connection,
+  author  = {Vincent, P.},
+  title   = {A Connection Between Score Matching and Denoising Autoencoders},
+  journal = {Neural Computation},
+  volume  = {23},
+  number  = {7},
+  pages   = {1661--1674},
+  year    = {2011},
+  doi     = {10.1162/NECO_a_00142}
+}
+
+
+% =========================================================================
+% SCORE-BASED GENERATIVE MODELS / DIFFUSION
+% =========================================================================
+
+% Note: arXiv preprint is 2020; published at ICLR 2021 — year=2021 is correct.
+@inproceedings{song2020score,
+  author    = {Song, Y. and Sohl-Dickstein, J. and Kingma, D. P.
+               and Kumar, A. and Ermon, S. and Poole, B.},
+  title     = {Score-Based Generative Modeling through Stochastic
+               Differential Equations},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021}
+}
+
+@inproceedings{ho2020ddpm,
+  author    = {Ho, J. and Jain, A. and Abbeel, P.},
+  title     = {Denoising Diffusion Probabilistic Models},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {33},
+  pages     = {6840--6851},
+  year      = {2020}
+}
+
+
+% =========================================================================
+% TWEEDIE / SCORE IDENTITIES
+% =========================================================================
+
+@article{efron2011tweedie,
+  author  = {Efron, B.},
+  title   = {Tweedie's Formula and Selection Bias},
+  journal = {Journal of the American Statistical Association},
+  volume  = {106},
+  number  = {496},
+  pages   = {1602--1614},
+  year    = {2011},
+  doi     = {10.1198/jasa.2011.tm11181}
+}
+
+@inproceedings{bardes2022vicreg,
+  author    = {Bardes, A. and Ponce, J. and LeCun, Y.},
+  title     = {{VICReg}: Variance-Invariance-Covariance Regularization
+               for Self-Supervised Learning},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2022}
+}
+
+
+% ---- Added for the camera-ready (verify metadata before submission) ----
+@article{osvae,
+  author  = {Tian, Q. and He, C. and Xu, Y. and Wu, Z. and Wei, Z.},
+  title   = {Hyperspectral Target Detection: Learning Faithful Background Representations via Orthogonal Subspace-Guided Variational Autoencoder},
+  journal = {IEEE Transactions on Geoscience and Remote Sensing},
+  volume  = {62},
+  year    = {2024},
+  pages   = {1--14},
+  doi     = {10.1109/TGRS.2024.3393931}
+}
+
+
+
+@article{tsttd,
+  author  = {Jiao, J. and Gong, Z. and Zhong, P.},
+  title   = {Triplet Spectralwise Transformer Network for Hyperspectral Target Detection},
+  journal = {IEEE Transactions on Geoscience and Remote Sensing},
+  volume  = {61},
+  pages   = {1--17},
+  year    = {2023},
+  doi     = {10.1109/TGRS.2023.3306084}
+}

@@ -1,0 +1,93 @@
+% !TeX program = pdflatex
+
+\documentclass[12pt,a4paper,oneside,onecolumn]{book}
+\usepackage{url}
+\usepackage{libertine}
+\usepackage{courier}
+\usepackage[utf8x]{inputenc}
+\usepackage[hebrew,english]{babel}
+\usepackage[longnamesfirst,square,numbers,comma,sort&compress]{natbib}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+% --- added for the figures and tables taken from the MLSP paper / poster ---
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+% poster palette (used by the tikz diagrams in figures/)
+\definecolor{pnavy}{HTML}{0F2A52}    % boxes, "learning time" frame
+\definecolor{pbrown}{HTML}{a36752}   % "test time" frame, target spectrum
+\definecolor{pmuted}{HTML}{4C5D78}   % box borders, secondary text
+\definecolor{pbody}{HTML}{111314}    % body ink
+\definecolor{pyellow}{HTML}{FFD500}  % pixel marker
+\definecolor{pteal}{HTML}{1B9E77}    % target-pixel curve
+% \newcommand{\R}{\mathbb{R}}
+\renewcommand{\R}{\mathbb{R}}
+\usepackage{mathpazo}
+\usepackage{datetime}
+%\usepackage{hyperref}
+%\usepackage{bookmark}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+% Notation
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Hnull}{\mathcal{H}_0}
+\newcommand{\Halt}{\mathcal{H}_1}
+\newcommand{\score}{\psi}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+
+\titleformat{\chapter}[hang]{\bf\huge}{\thechapter}{2pc}{}
+\title{HUJI M.Sc.~Thesis Template}
+
+\begin{document}
+
+\input{cover}
+\input{cover_heb}
+%\input{cover_sig}
+
+\frontmatter
+
+\renewcommand{\baselinestretch}{1.5}
+
+\input{abstract_heb}
+\input{abstract}
+\input{acknowledgements}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\input{introduction}
+% \input{motivation}
+\input{previous_work}
+% added by me: preliminaries
+\input{preliminaries}
+\input{score_based_detection}
+\input{spatial_adaptation}
+% \input{research_question}
+% \input{methods}
+\input{experiments}
+% \input{results}
+\input{conclusion}
+
+\bibliographystyle{apalike}
+\bibliography{thesis}
+
+\end{document}

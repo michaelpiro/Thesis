@@ -1,0 +1,48 @@
+\chapter{Introduction}
+\label{chap:intro}
+
+Adaptive target detection is a fundamental problem in statistical signal
+processing with applications in radar, sonar, and hyperspectral imaging. In
+the classical formulation, a known target signature must be detected in a
+background whose distribution is unknown and must be inferred from
+target-free secondary data. Existing approaches range from classical
+model-based tests, which are accurate, interpretable, and reliable but rely on restrictive parametric assumptions, to
+end-to-end learned classifiers, which are flexible but forgo much of this
+structure. In this paper, we propose a hybrid approach that retains the
+classical Rao test while using a modern generative-modeling tool, DSM, to learn the background distribution from secondary data.
+
+We focus on the weak-target regime. For a scalar one-sided detection problem, the LMP detector coincides with the one-sided Rao test and depends on the background only through its score function and a small number of score moments \cite{kay1998detection,kay1989asymptotically}. This observation is appealing because it separates the problem into a detector whose form is prescribed by theory and a background-modeling task centered on the null score. Rather than fitting a full likelihood or learning a target-specific discriminant, one can estimate the background score and plug it into the classical detector.
+
+
+Classical adaptive detection has been developed mainly for Gaussian background models and their extensions. In the Gaussian case, adaptation reduces to estimating the background mean and covariance, leading to the matched filter, the adaptive matched filter, and related GLRT-based detectors \cite{kelly1986adaptive,robey1992cfar,kay1998detection,vinGRLT}. However, in many sensing problems, a single Gaussian model is too restrictive. Hyperspectral scenes contain mixtures of material classes, heavy-tailed variability, nonlinear mixing effects, and spatially varying statistics~\cite{manolakis02,manolakis2014detection}; radar clutter is often impulsive or heterogeneous as well. This has motivated a broad literature on adaptive and non-Gaussian detection, including mixture-based background models, e.g., \cite{levin2019cluster}. 
+
+
+Learning-based detectors offer a different route. Early work used neural networks as nonlinear preprocessors for detection in non-Gaussian noise \cite{lippmann1988adaptive,gandhi1997neural}, and more recent work has related supervised classifiers to Neyman--Pearson and likelihood-ratio detection \cite{jarabo2013radar}. In hyperspectral target detection, recent work also includes target-informed and end-to-end learned detectors such as HTD-Net and THANTD \cite{htd-net, thantd}. These methods provide high accuracy, but they typically learn the full detector for a particular target and training protocol. As a result, the detector is often target-dependent and its relation to classical model-based statistics and to CFAR calibration is indirect. They are also designed and evaluated on strong full pixel targets, so the
+weak subpixel regime considered here may lie outside their intended scope.
+
+
+\newpage
+Concretely, in the additive model
+\begin{align}\label{eq:additive_model}
+    y = \theta s + w ,
+\end{align}
+where $s$ is a known target signature, $\theta$ is the target amplitude and $w \sim p_w$ is background clutter,
+the LMP statistic depends on the background only through the score
+function $\psi(w) = \nabla_w \log p_w(w)$.
+The Gaussian matched filter is recovered when the score is affine,
+$\psi(w)=-\Sigma^{-1}(w-\mu)$, while non-Gaussian clutter leads to nonlinear
+scores. This locally optimum viewpoint is classical
+\cite{capon1961asymptotic} and underlies adaptive Rao-type detection
+\cite{kay1989asymptotically,demaio2007rao}; the practical obstacle is that the
+background score is rarely available in closed form.
+
+We address this difficulty by relying on recent advances in score-based generative modeling. Specifically, we propose to estimate the background score from secondary data using DSM. Score matching was introduced by Hyv\"arinen as a method for fitting unnormalized statistical models without evaluating the normalizing constant \cite{hyvarinen2005estimation}. Vincent showed that a denoising regression objective estimates the score of a Gaussian-smoothed version of the data density \cite{vincent2011connection}, and related objectives have since become central to score-based generative modeling and diffusion models \cite{song2020score,ho2020ddpm}. Here, however, these tools are used not for generation but for detection.
+
+\newpage
+The main contributions of this paper are as follows.
+\begin{itemize}
+\item We propose DART, a Denoising score Assisted Rao Test. It is based on a
+modern DSM estimator that is plugged into the classical LMP detector.
+\item We show that the affine DART coincides with the classical diagonally loaded adaptive matched filter (AMF), and that it can be readily generalized to nonlinear and non-Gaussian settings using modern neural architectures.
+\item Finally, we develop DARTS, a variant designed for realistic spatially correlated backgrounds that achieves high detection accuracy while maintaining empirical CFAR calibration. The two ingredients of DARTS are additional side information from neighboring latents (see Fig. \ref{fig:darts-architecture}) and neighborhood-based normalization of the final test.
+\end{itemize}
